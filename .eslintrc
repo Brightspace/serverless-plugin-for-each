@@ -1,0 +1,8 @@
+root: true
+
+extends:
+    - brightspace/node-config
+    - plugin:import/recommended
+
+parserOptions:
+    sourceType: script

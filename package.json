@@ -1,0 +1,39 @@
+{
+  "name": "@d2l/serverless-plugin-for-each",
+  "version": "1.0.0",
+  "description": "Serverless plugin that adds $forEach syntax",
+  "main": "src/index.js",
+  "scripts": {
+    "license": "d2l-license-checker",
+    "lint": "eslint .",
+    "posttest": "npm run lint && npm run license",
+    "test": "nyc --all mocha --config test/.mocharc.json"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "d2l-license-checker": "^3.2.0",
+    "eslint": "^7.26.0",
+    "eslint-config-brightspace": "^0.14.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-mocha": "^8.1.0",
+    "mocha": "^8.4.0",
+    "nyc": "^15.1.0"
+  },
+  "peerDependencies": {
+    "serverless": "2.x"
+  },
+  "engines": {
+    "node": ">=12.0"
+  },
+  "author": "D2L Corporation",
+  "license": "Apache-2.0",
+  "nyc": {
+    "include": [
+      "src/**"
+    ],
+    "extension": [
+      ".js"
+    ]
+  }
+}
