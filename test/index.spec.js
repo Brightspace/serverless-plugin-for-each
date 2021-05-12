@@ -34,12 +34,12 @@ describe('ForEachPlugin', function() {
 			{
 				scenario: 'config is not an object',
 				config: [],
-				message: 'custom.$forEach must be object'
+				message: 'custom/$forEach must be object'
 			},
 			{
 				scenario: 'required keys are missing',
 				config: {},
-				message: 'custom.$forEach must have required property \'iterator\''
+				message: 'custom/$forEach must have required property \'iterator\''
 			},
 			{
 				scenario: 'additional keys are present',
@@ -48,7 +48,7 @@ describe('ForEachPlugin', function() {
 					template: [''],
 					junk: ''
 				},
-				message: 'custom.$forEach must NOT have additional properties'
+				message: 'custom/$forEach must NOT have additional properties'
 			},
 			{
 				scenario: 'iterator type is invalid',
@@ -56,7 +56,7 @@ describe('ForEachPlugin', function() {
 					iterator: '',
 					template: ['']
 				},
-				message: 'custom.$forEach/iterator must be array, custom.$forEach/iterator must be object, custom.$forEach/iterator must match exactly one schema in oneOf'
+				message: 'custom/$forEach/iterator must be array, custom/$forEach/iterator must be object, custom/$forEach/iterator must match exactly one schema in oneOf'
 			},
 			{
 				scenario: 'iterator has $env property together with some other property',
@@ -67,7 +67,7 @@ describe('ForEachPlugin', function() {
 					},
 					template: ['']
 				},
-				message: 'custom.$forEach/iterator must NOT have additional properties'
+				message: 'custom/$forEach/iterator must NOT have additional properties'
 			},
 			{
 				scenario: 'iterator has $env property that is not a string',
@@ -77,7 +77,7 @@ describe('ForEachPlugin', function() {
 					},
 					template: ['']
 				},
-				message: 'custom.$forEach/iterator must be array, custom.$forEach/iterator/$env must be string'
+				message: 'custom/$forEach/iterator must be array, custom/$forEach/iterator/$env must be string'
 			},
 			{
 				scenario: 'template type is invalid',
@@ -85,7 +85,7 @@ describe('ForEachPlugin', function() {
 					iterator: [''],
 					template: ''
 				},
-				message: 'custom.$forEach/template must be array,object'
+				message: 'custom/$forEach/template must be array,object'
 			}
 		].forEach(({ scenario, config, message }) => {
 			it(scenario, function() {

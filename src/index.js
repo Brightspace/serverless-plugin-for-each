@@ -80,7 +80,7 @@ class ForEachPlugin {
 				if (key === '$forEach') {
 					this.log(`Found a match in ${path}`);
 
-					this.validate(obj[key], `${path}.${key}`);
+					this.validate(obj[key], `${path}/${key}`);
 
 					const { iterator: rawIterator, template } = obj[key];
 
@@ -116,8 +116,7 @@ class ForEachPlugin {
 
 						set(this.serverless.service, basePath, newArray);
 					} else {
-						const original = get(this.serverless.service, path);
-						const { $forEach, ...result } = original; // eslint-disable-line no-unused-vars
+						const { $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
 						set(this.serverless.service, path, { ...result, ...interpolated });
 					}
 				} else {
