@@ -64,12 +64,18 @@ class ForEachPlugin {
 		}
 	}
 
-	interpolate(obj, key, value) {
-		const stringified = JSON.stringify(obj);
-		return JSON.parse(stringified
-			.replace('$forEach.key', key)
-			.replace('$forEach.value', value)
-		);
+	interpolate(template, key, value) {
+		const stringified = JSON.stringify(template);
+
+		const interpolated = stringified
+			.replace(/\$forEach.key/g, key)
+			.replace(/\$forEach.value/g, value);
+
+		try {
+			return JSON.parse(interpolated);
+		} catch (error) {
+			throw new Error(`Interpolated template is not a valid JSON: ${interpolated}`);
+		}
 	}
 
 	findAndReplace(obj, path) {
@@ -111,12 +117,14 @@ class ForEachPlugin {
 						const basePath = pathIsArray[1];
 						const index = Number(pathIsArray[2]);
 
-						const original = get(this.serverless.service, basePath);
-						const newArray = original.slice(0, index).concat(interpolated).concat(original.slice(index + 1));
-
-						set(this.serverless.service, basePath, newArray);
+						get(this.serverless.service, basePath).splice(index, 1, ...interpolated);
 					} else {
 						const { $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
+
+						if (Array.isArray(interpolated) && Object.keys(result).length > 0) {
+							throw new Error('Can\'t merge array into object');
+						}
+
 						set(this.serverless.service, path, { ...result, ...interpolated });
 					}
 				} else {

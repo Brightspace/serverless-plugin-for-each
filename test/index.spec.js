@@ -357,4 +357,58 @@ describe('ForEachPlugin', function() {
 			pathThatShouldNotBeTraversed
 		);
 	});
+
+	it('should replace all interpolation variables', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				$forEach: {
+					iterator: ['foo'],
+					template: {
+						result: '$forEach.key:$forEach.key:$forEach.value:$forEach.value'
+					}
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom).to.deep.equal({
+			result: '0:0:foo:foo'
+		});
+	});
+
+	it('throw an error when interpolated template is not a valid JSON', function() {
+		const { plugin } = createTestInstance({
+			custom: {
+				$forEach: {
+					iterator: ['\\'],
+					template: {
+						'$forEach.value': '$forEach.value'
+					}
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.throw('Interpolated template is not a valid JSON');
+	});
+
+	it('throw an error when interpolated template is an array, but $forEach was a part of the object', function() {
+		const { plugin } = createTestInstance({
+			custom: {
+				foo: 'foo',
+				$forEach: {
+					iterator: ['bar'],
+					template: ['$forEach.value']
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.throw('Can\'t merge array into object');
+	});
 });
