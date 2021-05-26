@@ -1,0 +1,68 @@
+name: Serverless Plugin For Each CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  Setup-Env:
+     runs-on: ubuntu-latest
+     timeout-minutes: 1
+     outputs:
+       isMain: ${{ steps.setupEnv.outputs.isMain }}
+     steps:
+       - name: Setup Env
+         id: setupEnv
+         uses: Brightspace/actions-parse-workflow-env@v2
+
+  Tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        node: [10, 12, 14]
+    steps:
+      - name: Checkout
+        uses: Brightspace/third-party-actions@actions/checkout
+
+      - name: Setup Node
+        uses: Brightspace/third-party-actions@actions/setup-node
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Download Dependencies
+        run: npm ci
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+      - name: Lint
+        run: npm run lint
+
+      - name: License Test
+        run: npm run license
+
+  Release:
+    if: ${{ needs.Setup-Env.outputs.isMain == 'true' }}
+    runs-on: ubuntu-latest
+    needs: [Setup-Env, Tests]
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: Brightspace/third-party-actions@actions/checkout
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: Brightspace/third-party-actions@actions/setup-node
+        with:
+          node-version: 12
+
+      - name: Semantic Release
+        uses: BrightspaceUI/actions/semantic-release@master
+        with:
+          GITHUB_TOKEN: ${{ secrets.D2L_GITHUB_TOKEN }}
+          NPM: true
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
