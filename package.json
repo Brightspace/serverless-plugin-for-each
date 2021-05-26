@@ -34,6 +34,9 @@
   },
   "author": "D2L Corporation",
   "license": "Apache-2.0",
+  "contributors": [
+    "Anton Bazhal <am.bazhal@gmail.com> (https://github.com/AntonBazhal)"
+  ],
   "nyc": {
     "include": [
       "src/**"
