@@ -1,5 +1,5 @@
 {
-  "name": "@d2l/serverless-plugin-for-each",
+  "name": "serverless-plugin-for-each",
   "version": "1.0.0",
   "description": "Serverless plugin that adds $forEach syntax to reduce code duplication and allow creating dynamic templates",
   "main": "src/index.js",
