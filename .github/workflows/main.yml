@@ -9,7 +9,6 @@ on:
 jobs:
   Setup-Env:
      runs-on: ubuntu-latest
-     container: bash
      timeout-minutes: 1
      outputs:
        isMain: ${{ steps.setupEnv.outputs.isMain }}
