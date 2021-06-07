@@ -80,7 +80,11 @@ class ForEachPlugin {
 
 	findAndReplace(obj, path) {
 		if (Array.isArray(obj)) {
-			obj.forEach((val, idx) => this.findAndReplace(val, `${path}[${idx}]`));
+			// iterate in the reverse order so that templates that increase
+			// array size does not mess up ordering
+			for (let i = obj.length - 1; i >= 0; i--) {
+				this.findAndReplace(obj[i], `${path}[${i}]`);
+			}
 		} else if (typeof obj === 'object' && obj !== null) {
 			for (const key in obj) {
 				if (key === '$forEach') {

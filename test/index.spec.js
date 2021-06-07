@@ -217,6 +217,48 @@ describe('ForEachPlugin', function() {
 		]);
 	});
 
+	it('should support array item replacement when array size is increased during replacement', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				foo: [
+					{
+						$forEach: {
+							iterator: {
+								bar: 'bar',
+								baz: 'baz'
+							},
+							template: [
+								{ '$forEach.key': '$forEach.value' }
+							]
+						}
+					},
+					{
+						$forEach: {
+							iterator: {
+								bar2: 'bar2',
+								baz2: 'baz2'
+							},
+							template: [
+								{ '$forEach.key': '$forEach.value' }
+							]
+						}
+					}
+				]
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom.foo).to.deep.equal([
+			{ bar: 'bar' },
+			{ baz: 'baz' },
+			{ bar2: 'bar2' },
+			{ baz2: 'baz2' }
+		]);
+	});
+
 	it('should flatten one level when replacing array item and template is an array', function() {
 		const { plugin, serverless } = createTestInstance({
 			custom: {
