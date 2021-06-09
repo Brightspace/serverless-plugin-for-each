@@ -259,6 +259,36 @@ describe('ForEachPlugin', function() {
 		]);
 	});
 
+	it('should support nested configuration replacement', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: [{
+				$forEach: {
+					iterator: [{
+						$forEach: {
+							iterator: ['foo', 'bar'],
+							template: ['$forEach.value/first']
+						}
+					}],
+					template: [{
+						$forEach: {
+							iterator: ['value'],
+							template: ['$forEach.$forEach.value/second']
+						}
+					}]
+				}
+			}]
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom).to.deep.equal([
+			'foo/first/second',
+			'bar/first/second'
+		]);
+	});
+
 	it('should flatten one level when replacing array item and template is an array', function() {
 		const { plugin, serverless } = createTestInstance({
 			custom: {
@@ -419,6 +449,29 @@ describe('ForEachPlugin', function() {
 		expect(serverless.service.custom).to.deep.equal({
 			result: '0:0:foo:foo'
 		});
+	});
+
+	it('should count all matches', function() {
+		const { plugin } = createTestInstance({
+			custom: [{
+				$forEach: {
+					iterator: [{
+						$forEach: {
+							iterator: ['foo'],
+							template: ['$forEach.value']
+						}
+					}],
+					template: [{
+						$forEach: {
+							iterator: ['bar'],
+							template: ['$forEach.value']
+						}
+					}]
+				}
+			}]
+		});
+
+		expect(plugin.replace()).to.equal(3);
 	});
 
 	it('throw an error when interpolated template is not a valid JSON', function() {

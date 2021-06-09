@@ -79,16 +79,20 @@ class ForEachPlugin {
 	}
 
 	findAndReplace(obj, path) {
+		let count = 0;
+
 		if (Array.isArray(obj)) {
 			// iterate in the reverse order so that templates that increase
 			// array size does not mess up ordering
 			for (let i = obj.length - 1; i >= 0; i--) {
-				this.findAndReplace(obj[i], `${path}[${i}]`);
+				count += this.findAndReplace(obj[i], `${path}[${i}]`);
 			}
 		} else if (typeof obj === 'object' && obj !== null) {
 			for (const key in obj) {
+				count += this.findAndReplace(obj[key], `${path}.${key}`);
+
 				if (key === '$forEach') {
-					this.log(`Found a match in ${path}`);
+					count++;
 
 					this.validate(obj[key], `${path}/${key}`);
 
@@ -131,11 +135,11 @@ class ForEachPlugin {
 
 						set(this.serverless.service, path, { ...result, ...interpolated });
 					}
-				} else {
-					this.findAndReplace(obj[key], `${path}.${key}`);
 				}
 			}
 		}
+
+		return count;
 	}
 
 	validate(config, path) {
@@ -147,13 +151,17 @@ class ForEachPlugin {
 	replace() {
 		this.log('Scanning configuration');
 
-		Object.entries(this.serverless.service).forEach(([path, value]) => {
+		const count = Object.entries(this.serverless.service).reduce((acc, [path, value]) => {
 			if (!EXCLUDE_PATHS.has(path)) {
-				this.findAndReplace(value, path);
+				acc += this.findAndReplace(value, path);
 			}
-		});
 
-		this.log('Scan complete');
+			return acc;
+		}, 0);
+
+		this.log(`Found ${count} matches`);
+
+		return count;
 	}
 
 	log(message) {
