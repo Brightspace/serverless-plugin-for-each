@@ -41,7 +41,10 @@ const SCHEMA = {
 			]
 		},
 		template: {
-			type: ['array', 'object']
+			oneOf: [
+				{ type: 'array' },
+				{ type: 'object' },
+			]
 		}
 	},
 	required: ['iterator', 'template'],
