@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const ForEachPlugin = require('../src/index');
 
 function createTestInstance(service, other = {}) {
+	const log = sinon.stub();
 	const serverless = {
 		service: {
 			functions: [],
@@ -13,13 +14,13 @@ function createTestInstance(service, other = {}) {
 			...service
 		},
 		cli: {
-			log: sinon.stub()
+			log
 		},
 		...other
 	};
 
 	return {
-		plugin: new ForEachPlugin(serverless),
+		plugin: new ForEachPlugin(serverless, {}, { log }),
 		serverless
 	};
 }
@@ -85,7 +86,7 @@ describe('ForEachPlugin', function() {
 					iterator: [''],
 					template: ''
 				},
-				message: 'custom/$forEach/template must be array,object'
+				message: 'custom/$forEach/template must be array, custom/$forEach/template must be object, custom/$forEach/template must match exactly one schema in oneOf'
 			}
 		].forEach(({ scenario, config, message }) => {
 			it(scenario, function() {
