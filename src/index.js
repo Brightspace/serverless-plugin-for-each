@@ -52,8 +52,9 @@ const SCHEMA = {
 };
 
 class ForEachPlugin {
-	constructor(serverless) {
+	constructor(serverless, cliOptions, { log } = {}) {
 		this.serverless = serverless;
+		this.log = log;
 
 		this.ajv = new Ajv({ allowUnionTypes: true });
 		this.validator = this.ajv.compile(SCHEMA);
@@ -152,7 +153,9 @@ class ForEachPlugin {
 	}
 
 	replace() {
-		this.log('Scanning configuration');
+		if (this.log && this.log.info) {
+			this.log.info('Scanning configuration to replace $forEach');
+		}
 
 		const count = Object.entries(this.serverless.service).reduce((acc, [path, value]) => {
 			if (!EXCLUDE_PATHS.has(path)) {
@@ -162,13 +165,11 @@ class ForEachPlugin {
 			return acc;
 		}, 0);
 
-		this.log(`Found ${count} matches`);
+		if (this.log && this.log.success) {
+			this.log.success(`Found and replaced ${count} $forEach matches`);
+		}
 
 		return count;
-	}
-
-	log(message) {
-		this.serverless.cli.log(`[serverless-plugin-for-each] ${message}`);
 	}
 }
 
