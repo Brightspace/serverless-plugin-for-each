@@ -19,7 +19,7 @@
     "chai": "^4.3.4",
     "d2l-license-checker": "^3.2.0",
     "eslint": "^7.26.0",
-    "eslint-config-brightspace": "^0.14.1",
+    "eslint-config-brightspace": "^0.18.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mocha": "^8.1.0",
     "mocha": "^8.4.0",
