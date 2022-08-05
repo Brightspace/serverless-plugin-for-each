@@ -27,7 +27,7 @@
     "sinon": "^14.0.0"
   },
   "peerDependencies": {
-    "serverless": "2.x"
+    "serverless": ">= 2.x <= 3.21.x"
   },
   "engines": {
     "node": ">=12.0"
