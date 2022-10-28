@@ -18,7 +18,7 @@
   "devDependencies": {
     "chai": "^4.3.4",
     "d2l-license-checker": "^4.1.13",
-    "eslint": "^8.21.0",
+    "eslint": "^8.24.0",
     "eslint-config-brightspace": "^0.18.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-mocha": "^10.1.0",
