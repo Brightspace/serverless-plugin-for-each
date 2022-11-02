@@ -24,7 +24,7 @@
     "eslint-plugin-mocha": "^10.1.0",
     "mocha": "^10.1.0",
     "nyc": "^15.1.0",
-    "sinon": "^14.0.0"
+    "sinon": "^14.0.1"
   },
   "peerDependencies": {
     "serverless": ">= 2.x < 4.x"
