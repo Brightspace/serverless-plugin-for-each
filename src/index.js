@@ -71,14 +71,58 @@ class ForEachPlugin {
 	interpolate(template, key, value) {
 		const stringified = JSON.stringify(template);
 
-		const interpolated = stringified
-			.replace(/\$forEach.key/g, key)
-			.replace(/\$forEach.value/g, value);
+		const keyRegex = /\$forEach.key/g;
+		const valueRegex = /\$forEach\.value/g;
+
+		const template_with_keys_updated = stringified.replace(keyRegex, key);
+
+		const interpolated = this.replaceValues(template_with_keys_updated, valueRegex, value);
 
 		try {
 			return JSON.parse(interpolated);
 		} catch (error) {
 			throw new Error(`Interpolated template is not a valid JSON: ${interpolated}`);
+		}
+	}
+
+	/**
+	 *
+	 * This function handles values that may be objects instead of strings.
+	 * If the value variable is an object, check to see if the template indicates
+	 * nested keys should be used.
+	 */
+	replaceValues(stringified, valueRegex, value) {
+		if (typeof value === 'string') {
+			return stringified.replace(valueRegex, value);
+		} else if (typeof value === 'object') {
+			const nestedKeyCaptureRegex = new RegExp(valueRegex.source + '\\.(?<nestedKey>\\w*)', 'g');
+
+			const nestedKeyMatches = [...stringified.matchAll(nestedKeyCaptureRegex)];
+
+			const ValueObjectErrorMsg = (
+				'ForEach value is an object, but the template did not use a valid key from the object.\n' +
+				`Value: ${JSON.stringify(value)}\nTemplate: ${stringified}`
+			);
+
+			if (!nestedKeyMatches.length) {
+				throw new Error(ValueObjectErrorMsg);
+			}
+
+			for (const nestedKeyMatch of nestedKeyMatches) {
+				const nestedKey = nestedKeyMatch.groups.nestedKey;
+
+				if (!(nestedKey in value)) {
+					throw new Error(ValueObjectErrorMsg);
+				}
+
+				const nestedValue = value[nestedKey];
+
+				const nestedValueRegex = new RegExp(valueRegex.source + '\\.' + nestedKey);
+
+				stringified = this.replaceValues(stringified, nestedValueRegex, nestedValue);
+			}
+
+			return stringified;
 		}
 	}
 
@@ -103,6 +147,7 @@ class ForEachPlugin {
 					const { iterator: rawIterator, template } = obj[key];
 
 					const iterator = {};
+
 					if (rawIterator.$env) {
 						Object.entries(process.env).forEach(([name, value]) => {
 							if (name.match(rawIterator.$env)) {

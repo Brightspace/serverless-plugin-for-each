@@ -38,9 +38,11 @@ An array or object to replace `$forEach` block with. Template can contain `$forE
     - `$forEach.key` - environment variable name
     - `$forEach.value` - environment variable value
 
+When using an object type iterator, nested values can be accessed with dot notation, (e.g. `$forEach.value.nestedKey`).
+
 ## Examples
 
-### Populate environment variables based on the list
+### Populate environment variables based on the object
 
 #### Config
 ```yaml

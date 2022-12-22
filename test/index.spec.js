@@ -290,6 +290,98 @@ describe('ForEachPlugin', function() {
 		]);
 	});
 
+	it('should support using iterators with objects as values', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				$forEach: {
+					iterator: {
+						bar: {
+							'name': 'bar',
+							'nicknames': {
+								'main': 'barberator',
+								'secondary': 'barbarella',
+							},
+						},
+						baz: {
+							'name': 'baz',
+							'nicknames': {
+								'main': 'bazerator',
+								'secondary': 'big baz',
+							},
+						}
+					},
+					template: {
+						'$forEach.key': '$forEach.value.name',
+						'$forEach.key_nickname': '$forEach.value.nicknames.main'
+					}
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom).to.deep.equal({
+			'bar': 'bar',
+			'bar_nickname': 'barberator',
+			'baz': 'baz',
+			'baz_nickname': 'bazerator',
+		});
+	});
+
+	describe('should throw an error when value is object and no valid key is used in template', function() {
+		[
+			{
+				scenario: 'no value key used in template',
+				config: {
+					iterator: {
+						bar: {
+							'name': 'bar',
+						},
+						baz: {
+							'name': 'baz',
+						}
+					},
+					template: {
+						'$forEach.key': '$forEach.value',
+					},
+				},
+				message: 'ForEach value is an object, but the template did not use a valid key from the object.\nValue: {"name":"bar"}\nTemplate: {"bar":"$forEach.value"}'
+			},
+			{
+				scenario: 'invalid key used in template',
+				config: {
+					iterator: {
+						bar: {
+							'name': 'bar',
+						},
+						baz: {
+							'name': 'baz',
+						}
+					},
+					template: {
+						'$forEach.key': '$forEach.value.invalidKey',
+					}
+				},
+				message: 'ForEach value is an object, but the template did not use a valid key from the object.\nValue: {"name":"bar"}\nTemplate: {"bar":"$forEach.value.invalidKey"}',
+			}
+		].forEach(({ scenario, config, message }) => {
+			it(scenario, function() {
+				const { plugin } = createTestInstance({
+					custom: {
+						$forEach: config
+					}
+				});
+
+				expect(
+					() => plugin.replace()
+				).to.throw(message);
+
+			});
+		});
+	});
+
 	it('should flatten one level when replacing array item and template is an array', function() {
 		const { plugin, serverless } = createTestInstance({
 			custom: {
