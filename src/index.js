@@ -89,11 +89,11 @@ class ForEachPlugin {
 			// iterate in the reverse order so that templates that increase
 			// array size does not mess up ordering
 			for (let i = obj.length - 1; i >= 0; i--) {
-				count += this.findAndReplace(obj[i], `${path}[${i}]`);
+				count += this.findAndReplace(obj[i], [...path, i]);
 			}
 		} else if (typeof obj === 'object' && obj !== null) {
 			for (const key in obj) {
-				count += this.findAndReplace(obj[key], `${path}.${key}`);
+				count += this.findAndReplace(obj[key], [...path, key]);
 
 				if (key === '$forEach') {
 					count++;
@@ -123,13 +123,10 @@ class ForEachPlugin {
 							: { ...acc, ...entry };
 					}, Array.isArray(template) ? [] : {});
 
-					const pathIsArray = path.match(/^(.+)\[(\d+)\]$/);
+					if (Number.isInteger(path[path.length-1]) && Array.isArray(interpolated)) {
+						const index = path.pop()
 
-					if (pathIsArray && Array.isArray(interpolated)) {
-						const basePath = pathIsArray[1];
-						const index = Number(pathIsArray[2]);
-
-						get(this.serverless.service, basePath).splice(index, 1, ...interpolated);
+						get(this.serverless.service, path).splice(index, 1, ...interpolated);
 					} else {
 						const { $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
 
@@ -159,7 +156,7 @@ class ForEachPlugin {
 
 		const count = Object.entries(this.serverless.service).reduce((acc, [path, value]) => {
 			if (!EXCLUDE_PATHS.has(path)) {
-				acc += this.findAndReplace(value, path);
+				acc += this.findAndReplace(value, [path]);
 			}
 
 			return acc;
