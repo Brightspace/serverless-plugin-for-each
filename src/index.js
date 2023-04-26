@@ -10,6 +10,8 @@ const EXCLUDE_PATHS = new Set([
 	'tenant', 'org', 'initialServerlessConfig'
 ]);
 
+const KEY_REGEXP = /^\$forEach$|^\$forEach_.+$/;
+
 const SCHEMA = {
 	type: 'object',
 	properties: {
@@ -95,7 +97,7 @@ class ForEachPlugin {
 			for (const key in obj) {
 				count += this.findAndReplace(obj[key], `${path}.${key}`);
 
-				if (key === '$forEach') {
+				if (KEY_REGEXP.test(key)) {
 					count++;
 
 					this.validate(obj[key], `${path}/${key}`);
@@ -124,6 +126,11 @@ class ForEachPlugin {
 					}, Array.isArray(template) ? [] : {});
 
 					const pathIsArray = path.match(/^(.+)\[(\d+)\]$/);
+					const { [key]: $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
+
+					if (Array.isArray(interpolated) && Object.keys(result).length > 0) {
+						throw new Error('Can\'t merge array into object');
+					}
 
 					if (pathIsArray && Array.isArray(interpolated)) {
 						const basePath = pathIsArray[1];
@@ -131,13 +138,9 @@ class ForEachPlugin {
 
 						get(this.serverless.service, basePath).splice(index, 1, ...interpolated);
 					} else {
-						const { $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
+						obj = { ...result, ...interpolated };
 
-						if (Array.isArray(interpolated) && Object.keys(result).length > 0) {
-							throw new Error('Can\'t merge array into object');
-						}
-
-						set(this.serverless.service, path, { ...result, ...interpolated });
+						set(this.serverless.service, path, obj);
 					}
 				}
 			}
