@@ -10,7 +10,7 @@ const EXCLUDE_PATHS = new Set([
 	'tenant', 'org', 'initialServerlessConfig'
 ]);
 
-const KEY_REGEXP = /^\$forEach$|^\$forEach_.+$/;
+const KEY_REGEXP = /^\$forEach$|^\$forEach_\S+$/;
 
 const SCHEMA = {
 	type: 'object',
