@@ -185,6 +185,44 @@ describe('ForEachPlugin', function() {
 		});
 	});
 
+	it('should support object key replacement when $forEach has a suffix', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				foo: 'foo',
+				$forEach_withsuffix: {
+					iterator: {
+						bar: 'bar',
+						baz: 'baz'
+					},
+					template: {
+						'$forEach.key': '$forEach.value'
+					}
+				},
+				$forEach_withanothersuffix: {
+					iterator: {
+						bar2: 'bar2',
+						baz2: 'baz2'
+					},
+					template: {
+						'$forEach.key': '$forEach.value'
+					}
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom).to.deep.equal({
+			foo: 'foo',
+			bar: 'bar',
+			baz: 'baz',
+			bar2: 'bar2',
+			baz2: 'baz2'
+		});
+	});
+
 	it('should support array item replacement', function() {
 		const { plugin, serverless } = createTestInstance({
 			custom: {
@@ -214,6 +252,52 @@ describe('ForEachPlugin', function() {
 			{ before: 'before' },
 			{ bar: 'bar' },
 			{ baz: 'baz' },
+			{ after: 'after' }
+		]);
+	});
+
+	it('should support array item replacement when $forEach has a suffix', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				foo: [
+					{ before: 'before' },
+					{
+						$forEach_withsuffix: {
+							iterator: {
+								bar: 'bar',
+								baz: 'baz'
+							},
+							template: [
+								{ '$forEach.key': '$forEach.value' }
+							]
+						}
+					},
+					{
+						$forEach_withanothersuffix: {
+							iterator: {
+								bar2: 'bar2',
+								baz2: 'baz2'
+							},
+							template: [
+								{ '$forEach.key': '$forEach.value' }
+							]
+						}
+					},
+					{ after: 'after' }
+				]
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom.foo).to.deep.equal([
+			{ before: 'before' },
+			{ bar: 'bar' },
+			{ baz: 'baz' },
+			{ bar2: 'bar2' },
+			{ baz2: 'baz2' },
 			{ after: 'after' }
 		]);
 	});
@@ -260,7 +344,33 @@ describe('ForEachPlugin', function() {
 		]);
 	});
 
-	it('should support nested configuration replacement', function() {
+	it('should support nested configuration replacement in objects', function() {
+		const { plugin, serverless } = createTestInstance({
+			custom: {
+				$forEach: {
+					iterator: ['foo'],
+					template: {
+						$forEach: {
+							iterator: ['value'],
+							template: {
+								'$forEach.$forEach.value': 'bar'
+							}
+						}
+					}
+				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.not.throw();
+
+		expect(serverless.service.custom).to.deep.equal({
+			foo: 'bar'
+		});
+	});
+
+	it('should support nested configuration replacement in arrays', function() {
 		const { plugin, serverless } = createTestInstance({
 			custom: [{
 				$forEach: {
@@ -463,7 +573,7 @@ describe('ForEachPlugin', function() {
 						}
 					}],
 					template: [{
-						$forEach: {
+						$forEach_foo: {
 							iterator: ['bar'],
 							template: ['$forEach.value']
 						}
@@ -500,6 +610,29 @@ describe('ForEachPlugin', function() {
 					iterator: ['bar'],
 					template: ['$forEach.value']
 				}
+			}
+		});
+
+		expect(
+			() => plugin.replace()
+		).to.throw('Can\'t merge array into object');
+	});
+
+	it('throw an error when interpolated template is an array, but $forEach was a part of the object (no flattening)', function() {
+		const { plugin } = createTestInstance({
+			custom: {
+				foo: [
+					{
+						$forEach_1: {
+							iterator: ['bar'],
+							template: ['$forEach.value']
+						},
+						$forEach_2: {
+							iterator: ['bar'],
+							template: ['$forEach.value']
+						},
+					}
+				]
 			}
 		});
 

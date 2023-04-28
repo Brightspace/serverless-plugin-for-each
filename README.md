@@ -54,7 +54,7 @@ provider:
       iterator: ${self:custom.queues}
       template:
         $forEach.key_QUEUE_URL:
-          Fn::ImportValue: my-service-$forEach.value-queue-url
+          Fn::ImportValue: my-service-$forEach.value-url
 
 custom:
   # this list does not need to be hardcoded here and can come from a file, for example
@@ -73,15 +73,72 @@ provider:
     LOG_LEVEL: info
     REGION: us-east-1
     FIRST_QUEUE_URL:
-      Fn::ImportValue: my-service-first-queue-name-queue-url
+      Fn::ImportValue: my-service-first-queue-url
     SECOND_QUEUE_URL:
-      Fn::ImportValue: my-service-second-queue-name-queue-url
+      Fn::ImportValue: my-service-second-queue-url
 
 custom:
   # this list does not need to be hardcoded here and can come from a file, for example
   queues:
-    FIRST: first-queue-name
-    SECOND: second-queue-name
+    FIRST: first-queue
+    SECOND: second-queue
+```
+
+### Multiple $forEach blocks in the same object
+
+#### Config
+```yaml
+service: my-service
+
+provider:
+  environment:
+    LOG_LEVEL: info
+    REGION: us-east-1
+    $forEach_queues: # A "_suffix" can be added to avoid duplicated keys
+      iterator: ${self:custom.queues}
+      template:
+        $forEach.key_QUEUE_URL:
+          Fn::ImportValue: my-service-$forEach.value-url
+    $forEach_tables:
+      iterator: ${self:custom.tables}
+      template:
+        $forEach.key_TABLE_ARN:
+          Fn::ImportValue: my-service-$forEach.value-arn
+
+custom:
+  queues:
+    FIRST: first-queue
+    SECOND: second-queue
+  tables:
+    ONE: table-one
+    TWO: table-two
+```
+
+#### Result
+
+```yaml
+service: my-service
+
+provider:
+  environment:
+    LOG_LEVEL: info
+    REGION: us-east-1
+    FIRST_QUEUE_URL:
+      Fn::ImportValue: my-service-first-queue-url
+    SECOND_QUEUE_URL:
+      Fn::ImportValue: my-service-second-queue-url
+    ONE_TABLE_ARN:
+      Fn::ImportValue: my-service-one-table-arn
+    TWO_TABLE_ARN:
+      Fn::ImportValue: my-service-two-table-arn
+
+custom:
+  queues:
+    FIRST: first-queue
+    SECOND: second-queue
+  tables:
+    ONE: table-one
+    TWO: table-two
 ```
 
 ### Attach multiple streams to lambda using environment variables
