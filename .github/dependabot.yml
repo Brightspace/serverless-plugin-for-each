@@ -10,5 +10,8 @@ updates:
       prefix: fix
       prefix-development: build
       include: scope
+    ignore:
+      - dependency-name: "chai"
+        versions: [">=5.0"] # ESM only
     reviewers:
       - "Brightspace/lurvig"
