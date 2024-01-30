@@ -5,7 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
-    versioning-strategy: increase
+    versioning-strategy: increase-if-necessary
     commit-message:
       prefix: fix
       prefix-development: build
@@ -13,5 +13,9 @@ updates:
     ignore:
       - dependency-name: "chai"
         versions: [">=5.0"] # ESM only
+      # update-package-lock workflow already handles most minor/patch updates
+      # continue checking minor updates to cover dependendencies with version pattern 0.*.*
+      - dependency-name: "*"
+        update-types: ["version-update:semver-patch"]
     reviewers:
       - "Brightspace/lurvig"
