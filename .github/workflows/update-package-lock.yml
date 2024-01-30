@@ -23,4 +23,5 @@ jobs:
           AUTO_MERGE_METHOD: squash
           AUTO_MERGE_TOKEN: ${{ secrets.DEPENDENCIES_TOKEN }}
           APPROVAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.DEPENDENCIES_TOKEN }}
