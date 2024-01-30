@@ -6,7 +6,21 @@ on:
   workflow_dispatch: # manual trigger
 jobs:
   Update:
-    uses: Brightspace/space-github-actions/.github/workflows/update-package-lock.yml@main
-    secrets: inherit
-    with:
-      DEFAULT_BRANCH: master
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - uses: Brightspace/third-party-actions@actions/checkout
+        with:
+          token: ${{ secrets.DEPENDENCIES_TOKEN }}
+
+      - uses: Brightspace/third-party-actions@actions/setup-node
+        with:
+          node-version-file: .nvmrc
+
+      - name: Update package-lock.json
+        uses: BrightspaceUI/actions/update-package-lock@main
+        with:
+          AUTO_MERGE_METHOD: squash
+          AUTO_MERGE_TOKEN: ${{ secrets.DEPENDENCIES_TOKEN }}
+          APPROVAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPENDENCIES_TOKEN }}
