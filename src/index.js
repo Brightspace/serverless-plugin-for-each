@@ -1,8 +1,8 @@
 'use strict';
 
 const Ajv = require('ajv');
-const get = require('lodash.get');
-const set = require('lodash.set');
+const get = require('lodash/get');
+const set = require('lodash/set');
 
 const EXCLUDE_PATHS = new Set([
 	'serverless', 'serviceObject', 'pluginsData', 'package',
