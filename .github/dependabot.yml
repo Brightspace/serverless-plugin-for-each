@@ -13,6 +13,8 @@ updates:
     ignore:
       - dependency-name: "chai"
         versions: [">=5.0"] # ESM only
+      - dependency-name: "eslint"
+        versions: [">=9.0"]
       # update-package-lock workflow already handles most minor/patch updates
       # continue checking minor updates to cover dependendencies with version pattern 0.*.*
       - dependency-name: "*"
