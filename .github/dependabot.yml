@@ -15,6 +15,8 @@ updates:
         versions: [">=5.0"] # ESM only
       - dependency-name: "eslint"
         versions: [">=9.0"]
+      - dependency-name: "eslint-config-brightspace"
+        versions: [">=2.0"] # Requires eslint >= 9
       # update-package-lock workflow already handles most minor/patch updates
       # continue checking minor updates to cover dependendencies with version pattern 0.*.*
       - dependency-name: "*"
