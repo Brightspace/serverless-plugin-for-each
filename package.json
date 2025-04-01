@@ -23,7 +23,7 @@
     "eslint-plugin-mocha": "^10.4.2",
     "mocha": "^11.0.1",
     "nyc": "^17.0.0",
-    "sinon": "^19.0.2"
+    "sinon": "^20.0.0"
   },
   "peerDependencies": {
     "serverless": ">= 2.x < 4.x"
