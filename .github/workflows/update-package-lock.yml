@@ -1,7 +1,7 @@
 name: Update package-lock.json
 on:
   schedule:
-    - cron: '0 15 * * 1' # Mon 11:00AM EDT. 10:00AM EST.
+    - cron: '0 15 * * 3' # Wed 11:00AM EDT. 10:00AM EST.
     - cron: '0 6 1 * *' # 1st of each month 2:00 AM EDT/1:00 AM EST
   workflow_dispatch: # manual trigger
 jobs:
