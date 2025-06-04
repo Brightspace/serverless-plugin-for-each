@@ -18,10 +18,8 @@ updates:
       - dependency-name: "eslint-config-brightspace"
         versions: [">=2.0"] # Requires eslint >= 9
       - dependency-name: "eslint-plugin-mocha"
-        versions: [>="11.0"] # ESM only
+        versions: [">=11.0"] # ESM only
       # update-package-lock workflow already handles most minor/patch updates
       # continue checking minor updates to cover dependendencies with version pattern 0.*.*
       - dependency-name: "*"
         update-types: ["version-update:semver-patch"]
-    reviewers:
-      - "Brightspace/lurvig"
