@@ -1,6 +1,6 @@
 {
   "name": "serverless-plugin-for-each",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Serverless plugin that adds $forEach syntax to reduce code duplication and allow creating dynamic templates",
   "main": "src/index.js",
   "scripts": {
