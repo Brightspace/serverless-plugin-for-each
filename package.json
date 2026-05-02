@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.10",
-    "d2l-license-checker": "^6.0.4",
+    "d2l-license-checker": "^7.0.0",
     "eslint": "^8.56.0",
     "eslint-config-brightspace": "^1.1.1",
     "eslint-plugin-import": "^2.29.1",
