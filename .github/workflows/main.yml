@@ -31,6 +31,7 @@ jobs:
         uses: Brightspace/setup-node@main
         with:
           node-version: ${{ matrix.node }}
+          d2l-registry-token: ${{ secrets.D2L_PACKAGE_REGISTRY_AUTH_TOKEN }}
 
       - name: Download Dependencies
         run: npm ci
@@ -59,6 +60,7 @@ jobs:
         uses: Brightspace/setup-node@main
         with:
           node-version-file: .nvmrc
+          d2l-registry-token: ${{ secrets.D2L_PACKAGE_REGISTRY_AUTH_TOKEN }}
 
       - name: Semantic Release
         uses: BrightspaceUI/actions/semantic-release@main
