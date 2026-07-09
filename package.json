@@ -36,6 +36,9 @@
   "contributors": [
     "Anton Bazhal <am.bazhal@gmail.com> (https://github.com/AntonBazhal)"
   ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "nyc": {
     "include": [
       "src/**"
