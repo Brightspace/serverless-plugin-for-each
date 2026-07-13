@@ -77,7 +77,7 @@ class ForEachPlugin {
 
 		try {
 			return JSON.parse(interpolated);
-		} catch (error) {
+		} catch {
 			throw new Error(`Interpolated template is not a valid JSON: ${interpolated}`);
 		}
 	}
@@ -124,7 +124,7 @@ class ForEachPlugin {
 					}, Array.isArray(template) ? [] : {});
 
 					const pathIsArray = path.match(/^(.+)\[(\d+)\]$/);
-					const { [key]: $forEach, ...result } = obj; // eslint-disable-line no-unused-vars
+					const { [key]: $forEach, ...result } = obj;
 
 					if (Array.isArray(interpolated) && Object.keys(result).length > 0) {
 						throw new Error('Can\'t merge array into object');
