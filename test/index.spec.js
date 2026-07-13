@@ -1,9 +1,7 @@
-'use strict';
+import { expect } from 'chai';
+import sinon from 'sinon';
 
-const { expect } = require('chai');
-const sinon = require('sinon');
-
-const ForEachPlugin = require('../src/index');
+import ForEachPlugin from '../src/index.js';
 
 function createTestInstance(service, other = {}) {
 	const log = sinon.stub();

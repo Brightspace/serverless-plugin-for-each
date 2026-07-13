@@ -5,4 +5,8 @@ extends:
     - plugin:import/recommended
 
 parserOptions:
-    sourceType: script
+    ecmaVersion: latest
+    sourceType: module
+
+rules:
+    import/no-named-as-default-member: off

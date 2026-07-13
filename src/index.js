@@ -1,8 +1,6 @@
-'use strict';
-
-const Ajv = require('ajv');
-const get = require('lodash/get');
-const set = require('lodash/set');
+import Ajv from 'ajv';
+import get from 'lodash/get.js';
+import set from 'lodash/set.js';
 
 const EXCLUDE_PATHS = new Set([
 	'serverless', 'serviceObject', 'pluginsData', 'package',
@@ -176,4 +174,4 @@ class ForEachPlugin {
 	}
 }
 
-module.exports = ForEachPlugin;
+export default ForEachPlugin;
