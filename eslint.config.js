@@ -1,4 +1,3 @@
-import mocha from 'eslint-plugin-mocha';
 import { nodeConfig, setDirectoryConfigs } from 'eslint-config-brightspace';
 
 export default setDirectoryConfigs(
@@ -7,7 +6,6 @@ export default setDirectoryConfigs(
 		test: [
 			...nodeConfig,
 			{
-				plugins: { mocha },
 				languageOptions: {
 					globals: {
 						after: 'readonly',
