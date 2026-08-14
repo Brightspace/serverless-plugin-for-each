@@ -26,3 +26,6 @@ jobs:
           APPROVAL_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEFAULT_BRANCH: master
           GITHUB_TOKEN: ${{ secrets.DEPENDENCIES_TOKEN }}
+          SLACK_CHANNEL_FAILURE: '#buccaneer-alerts'
+          SLACK_CHANNEL_STALE_PR: '#buccaneer-alerts'
+          SLACK_TOKEN: ${{ secrets.D2L_SLACK_TOKEN }}

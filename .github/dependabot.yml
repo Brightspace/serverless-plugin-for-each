@@ -19,7 +19,6 @@ updates:
         versions: [">=2.0"] # Requires eslint >= 9
       - dependency-name: "eslint-plugin-mocha"
         versions: [">=11.0"] # ESM only
-      # update-package-lock workflow already handles most minor/patch updates
-      # continue checking minor updates to cover dependendencies with version pattern 0.*.*
+      # update-package-lock workflow handles minor and patch updates.
       - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+        update-types: ["version-update:semver-patch", "version-update:semver-minor"]
